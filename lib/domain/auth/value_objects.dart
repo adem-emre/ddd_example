@@ -30,3 +30,4 @@ class Password extends ValueObject<String> {
     return Password._(validatePassword(input));
   }
 }
+
