@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:ddd_example/domain/auth/auth_failure.dart';
 import 'package:ddd_example/domain/auth/i_auth_facade.dart';
@@ -11,12 +13,11 @@ part 'sign_in_form_state.dart';
 part 'sign_in_form_bloc.freezed.dart';
 
 @injectable
-@LazySingleton(as: IAuthFacade)
 class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
   final IAuthFacade _authFacade;
 
   SignInFormBloc(this._authFacade) : super(SignInFormState.initial()) {
-    on<SignInFormEvent>((event, emit) {
+    on<SignInFormEvent>((event, emit) async {
       void _performActionOnAuthFacadeWithEmailAndPassword(
           Future<Either<AuthFailure, Unit>> Function(
                   {required EmailAddress email, required Password password})
@@ -42,7 +43,7 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
         ));
       }
 
-      event.map(
+      await event.map<FutureOr<void>>(
           emailChanged: (e) => emit(state.copyWith(
                 emailAddress: EmailAddress(e.emailStr),
                 authFailureOrSuccessOption: none(),
