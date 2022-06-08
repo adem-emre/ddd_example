@@ -18,7 +18,7 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
 
   SignInFormBloc(this._authFacade) : super(SignInFormState.initial()) {
     on<SignInFormEvent>((event, emit) async {
-      void _performActionOnAuthFacadeWithEmailAndPassword(
+      Future<void> _performActionOnAuthFacadeWithEmailAndPassword(
           Future<Either<AuthFailure, Unit>> Function(
                   {required EmailAddress email, required Password password})
               forwardedCall) async {
@@ -53,7 +53,7 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
                 authFailureOrSuccessOption: none(),
               )),
           registerWithEmailAndPasswordPressed: (e) async {
-            _performActionOnAuthFacadeWithEmailAndPassword(
+            await _performActionOnAuthFacadeWithEmailAndPassword(
                 _authFacade.registerWithEmailAndPassword);
           },
           signInWithEmailAndPasswordPressed: (e) {
