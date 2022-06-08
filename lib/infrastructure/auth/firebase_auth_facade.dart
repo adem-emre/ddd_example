@@ -6,7 +6,6 @@ import 'package:ddd_example/domain/auth/value_objects.dart';
 
 import 'package:ddd_example/infrastructure/auth/firebase_user_mapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 
@@ -26,8 +25,8 @@ class FirebaseAuthFacade implements IAuthFacade {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: emailAddressStr, password: passwordStr);
       return right(unit);
-    } on PlatformException catch (e) {
-      if (e.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
         return left(const AuthFailure.emailAlreadyInUse());
       } else {
         return left(const AuthFailure.serverError());
@@ -44,9 +43,8 @@ class FirebaseAuthFacade implements IAuthFacade {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: emailAddressStr, password: passwordStr);
       return right(unit);
-    } on PlatformException catch (e) {
-      if (e.code == 'ERROR_WRONG_PASSWORD' ||
-          e.code == 'ERROR_USER_NOT_FOUND') {
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password' || e.code == 'user-not-found') {
         return left(const AuthFailure.invalidEmailAndPasswordCombination());
       } else {
         return left(const AuthFailure.serverError());
@@ -69,7 +67,7 @@ class FirebaseAuthFacade implements IAuthFacade {
       );
       await _firebaseAuth.signInWithCredential(authCredential);
       return right(unit);
-    } on PlatformException {
+    } catch (e) {
       return left(const AuthFailure.serverError());
     }
   }

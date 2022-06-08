@@ -56,8 +56,8 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
             await _performActionOnAuthFacadeWithEmailAndPassword(
                 _authFacade.registerWithEmailAndPassword);
           },
-          signInWithEmailAndPasswordPressed: (e) {
-            _performActionOnAuthFacadeWithEmailAndPassword(
+          signInWithEmailAndPasswordPressed: (e)async {
+            await _performActionOnAuthFacadeWithEmailAndPassword(
                 _authFacade.signInWithEmailAndPassword);
           },
           signInWithGooglePressed: (e) async {
